@@ -15,7 +15,7 @@ from tqdm import tqdm
 import logging
 import plotly.express as px
 import plotly.graph_objects as go
-
+import os
 
 logging.basicConfig(level=logging.INFO)
 last_path = np.array([0, 0])
@@ -296,7 +296,7 @@ def compute_shape(data0, kx, ky, folder_for_path, folder_for_meshes='cut_meshes'
     # print(rotation_of_entire_traj)
     angle = rotation_of_entire_traj[0]
     # print('Angle: {0}'.format(angle))
-
+    os.makedirs(os.path.join(folder_for_path,'path_data'),exist_ok=True)
     np.save(folder_for_path + '/path_data', data)
     base_box = trimesh.creation.box(extents=[cut_size * core_radius, cut_size * core_radius, cut_size * core_radius],
                                     transform=trimesh.transformations.translation_matrix(
@@ -309,7 +309,7 @@ def compute_shape(data0, kx, ky, folder_for_path, folder_for_meshes='cut_meshes'
         # Not optimized here. Would become vastly faster if, for example, you cache the rotation matrices.
         box_for_cutting.apply_transform(rotation_to_origin(i, data))
         boxes_for_cutting.append(box_for_cutting.copy())
-
+    os.makedirs(folder_for_meshes,exist_ok=True)
     for i, box in enumerate(boxes_for_cutting):
         # print('Saving box for cutting: {0}'.format(i))
         box.export('{0}/test_{1}.stl'.format(folder_for_meshes, i))
